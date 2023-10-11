@@ -23,6 +23,6 @@
 | [hyunihs](https://github.com/hyunihs) | [suhhyun524](https://github.com/suhhyun524) |   [shj718](https://github.com/shj718)    |   [haen-su](https://github.com/haen-su)    |
 
 ## 🍩 참고자료
-[[교재]](면접을 위한 CS 전공지식)  
+[[교재]](https://www.yes24.com/Product/Goods/108887922)  
 [[깃허브 1]](https://github.com/ksundong/backend-interview-question)  
 [[깃허브 2]](https://github.com/devSquad-study/2023-CS-Study)
