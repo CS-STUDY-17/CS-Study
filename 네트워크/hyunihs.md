@@ -138,7 +138,7 @@
 #### TCP
 
 - 가상회선 패킷 교환 방식 (Virtual Circuit Packet Switching)
-  - 각 패킷에 가상회선 식별ㄹ자 포함
+  - 각 패킷에 가상회선 식별자 포함
   - 모든 패킷 전송시 가상회선 해제
   - 패킷은 전송 순서대로 도착
   - 이전에 있던 Circuit Switching, Packet Switching의 단점을 보완해 나옴
