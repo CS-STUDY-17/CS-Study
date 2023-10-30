@@ -74,4 +74,127 @@ transmission rate가 가장 높은 link에 발생, 한 link에 너무 많은 tra
 NW 프로토콜: IEEE, IETF과 같은 기관에서 정함  
 - IEEE802.3 - 유선 LAN
 - IEEE802.11 - wifi  
-  > 프로토콜: 송신자, 수신자 간의 메시지의 포맷, 순서, 행위 등을 명시한 규약
+  > 프로토콜: 송신자, 수신자 간의 메시지의 syntax, semantic, timing을 명시한 규약
+
+## TCP/IP 4계층 모델  
+### 계층 구조  
+
+<img src="https://velog.velcdn.com/images/ssulv3030/post/51bd3756-4e7d-4bc9-a984-fb59f14fc1bd/image.png">  
+
+- 각 계층은 분리되어 있다 -> 한 계층의 변화가 다른 계층에 영향을 미치지 않음    
+- 각 계층은 function call로 소통함  
+
+#### Application Layer
+FTP, HTTP, SMTP, SSH, DNS 등의 응용 프로그램이 실행되는 계층  
+서비스를 사람들에게 실질적으로 제공함
+
+#### Transport Layer
+송신자와 수신자를 연결하는 통신 서비스 제공  
+error control, flow control, congestion control(only TCP) 제공  
+Internet Layer와는 달리 reliable service를 제공한다는 특징 존재  
+
+| 특징                  | TCP                                     | UDP                                 |
+|-----------------------|-----------------------------------------|-------------------------------------|
+| 전송 방식             | 연결 지향 (Connection-oriented)         | 비연결 지향 (Connectionless)       |
+| 데이터 순서          | 데이터의 순서를 보장                   | 데이터의 순서 보장을 보장하지 않음 |
+| 흐름 제어            | 혼잡을 피하기 위한 흐름 제어 제공    | 흐름 제어 메커니즘이 없음          |
+| 사용 사례             | 웹, 이메일, 파일 전송과 같은 신뢰성 있는 통신에 주로 사용 | 실시간 애플리케이션, 비디오 스트리밍, 온라인 게임 등에서 주로 사용 |
+| 일반적인 프로토콜    | HTTP, HTTPS, FTP, SMTP, SSH 등          | DNS, DHCP, SNMP, VoIP (예: SIP), 비디오 회의 등 |
+| 예시                 | 데이터 무결성이 중요한 신뢰성 있는 통신에 사용 | 신뢰성보다 속도와 효율성이 더 중요한 상황에서 사용 |
+
+##### Circuit switching & Packet switching
+**Circuit switching**   
+사전에 communication path를 계산하고 할당하는 방식 -> in-order  
+1. conn set-up delay
+2. disconn delay  
+
+각 path는 공유되지 않고 미리 계산이 이루어지므로 전송 중에 딜레이가 발생하지 않음  
+ex. telephone network  
+단점: path 할당 -> 적은 user에게 서비스 가능  
+
+**(Datagram) Packet switching**  
+하나의 메시지를 쪼개서 (called packet) 전송하는 방식으로 각 packet은 각각 독립적으로 전달됨  
+미리 path를 계산하지 않고 각 node에서 다음 node를 결정 -> no order    
+1. transmition delay
+2. queueing delay
+
+단점: 네트워크 혼잡 때문에 각 패킷에서 delay나 loss가 생길 수 있음  
+-> congestion control 필요  
+-> TCP가 담당  
+    에러 처리
+
+**Virtual Circuit Packet switching (V.C.P.S)**
+1. Frame Relay: 하나의 메시지를 다양한 크기의 frame으로 쪼개서 전송 -> 에러 줄이고 오버헤드 감소
+2. ATM (비동기 전송 방식): 하나의 메시지를 cell로 쪼개서 전송, but 미리 route 결정
+
+##### 3-way handshaking - 연결(only TCP)
+1. C: SYN
+2. S: SYN+ACK
+3. C: ACK
+
+##### 4-way handshaking - 연결 해제 (only TCP)
+1. C: FIN, FIN_WAIT_1
+2. S: ACK, CLOSE_WAIT, C: FIN_WAIT_2
+3. S: FIN, C: TIME_WAIT
+4. C: ACK ... CLOSED, S: CLOSED  
+
+<img src="https://images.velog.io/images/nnnyeong/post/fd5029e1-b84c-4fa3-9f7b-d5f702f1b1b9/image.png">
+time-wait 이유: 늦게 도착하는 패킷이 있을 수 있기 때문
+
+#### Internet Layer
+best-effort service 제공: 서비스 품질 보장 안함
+IP, ARP, ICMP 등  
+
+#### Link Layer
+물리 계층 + 데이터 링크 계층  
+유/무선으로 실질적 데이터 전달 + 장치 간에 신호를 주고받는 **규칙** 정함  
+식
+### 유선 LAN (=Ethernet)
+IEEE 802.3  
+twisted pair, 광섬유 케이블 이용  
+full duplex: 송/수신 동시에 가능   
+(traditional 유선 LAN) half duplex:  
+- (ALOHA: 일단 frame 보내고 ACK 기다리는 방식)  
+- CSMA/CD: RX가 idle한지 확인 후 전송하는 방식, 전송하는 도중 충돌(half-duplex로 인한)이 탐지되면 idle한 상태를 기다리다가 다시 전송(1-persistance)  
+
+### 무선 LAN (=wifi)  
+IEEE 802.11  
+송신과 수신이 같은 채널 이용 -> half duplex  
+hidden node problem: 두개의 다른 node는 서로 겹치지 않는 반경에 존재해 서로를 감지하지 못할 수 있음  
+-> CD 불가능
+-> CSMA만? => ACK 기다리는 시간 비효율적(BW 낭비)
+- CSMA/CA: 
+  - RTS: Request to Send frame
+  - CTS: Clear to Send frame
+    1. Sender broadcasts RTS
+    2. Receiver(AP) broadcasts CTS
+    3. Sender transmits Data to AP
+    4. AP broadcasts ACK
+
+### 2.4GHz vs 5GHz
+- 2.4GHz: 회절 good but 속도 느림
+- 5GHz: 직진성 높아 회절 bad but 속도 빠름  
+-> 파장 차이
+
+#### 와이파이
+
+#### BSS와 ESS
+- BSS: 기본 서비스 집합, AP+장치로 구성
+- ESS: BSS가 연결된 것, 자유롭게 이동하며 네트워크 접속 가능
+<img src="https://thebook.io/img/080326/092.jpg">
+
+#### 계층 간 데이터 송수신 과정
+- 캡슐화: 상위 계층의 헤더와 페이로드를 페이로드로 묶고 새로운 헤더를 붙이는 과정
+- 비캡슐화: 하위 계층의 헤더를 제거하는 과정
+
+### PDU (Protocol Data Unit)
+헤더 + 페이로드로 구성  
+
+| 계층          | PDU 명칭                       |
+|-------------|------------------------------|
+| Application | 메시지                          |
+| Transport   | TCP-Segment, UDP-Datagram    |
+| Internet    | 패킷(Packet)                   |
+| Link        | 데이터링크-프레임(Frame), 물리-비트(Bit) |
+
+
