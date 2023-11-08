@@ -197,4 +197,100 @@ hidden node problem: 두개의 다른 node는 서로 겹치지 않는 반경에 
 | Internet    | 패킷(Packet)                   |
 | Link        | 데이터링크-프레임(Frame), 물리-비트(Bit) |
 
+## 네트워크 기기
+### L7 스위치 (=로드밸런서)
+스위치: 여러 장비 연결, 목적지로만 데이터 전송 not broadcasting  
+L7 스위치: 서버의 부하를 분산 -> 처리 가능한 트래픽 증가 목표  
+URL, 서버, 캐시, 쿠키 기반 트래픽 분산  
+ALB
+주기적 헬스체크 <- 작동 X 서버 제외하기 위해!  
+
+### L4 스위치
+IP, 포트번호 기반 트래픽 분산
+NLB
+
+#### 헬스 체크
+정상/비정상 서버 판별
+전송 주기, 재전송 횟수 등을 설정해 서버에 반복적으로 요청을 보내는 방식
+ex. TCP 요청 but 3-way handshake X => 비정상 서버로 판단
+
+#### 로드밸런서
+2대 이상의 서버를 기반으로 가상 IP 제공, 로드밸런서의 IP로 요청을 보내면 알아서 요청 분산해서 서버에 전달  
+
+### 라우터
+여러 개의 네트워크를 연결, 분할, 구분하는 역할  
+네트워크에 존재하는 장치끼리 데이터를 주고받을 때, **최소 경로**로 패킷을 포워팅하는 라우팅 역할을 함
+
+### L3 스위치
+L2 스위치 + (hw 기반)라우팅 기능  
+
+| 구분       | L2 스위치 | L3 스위치 |
+|-----------|----------|--------|
+| 참조 테이블  | MAC 주소 테이블 | 라우팅 테이블 |
+| 참조 PDU   | 이더넷 프레임 | IP 패킷 |
+| 참조 주소    | MAC 주소 | IP 주소 |
+
+### 브리지
+LAN과 LAN을 연결하는 역할  
+
+하나의 큰 LAN을 구성하지 않는 이유
+1. Reliability; fault is restricted to small area
+2. Performance; clustering devices and separate intra-/inter-traffic
+3. Security; keep diff. types of traffic that have diff. security needs on
+physically separate media
+4. Geography; two buildings separate by highway can be connected
+by a microwave bridge link
+
+#### NIC - 고유 MAC 주소 가짐
+#### 리피터 - 신호 증폭
+#### AP
+
+## IP 주소
+
+### ARP (Address Resolution Protocol)
+- IP 주소를 통해 MAC 주소를 얻는 프로토콜
+- ARP table: 같은 LAN에 존재하는 노드의 정보만 저장
+- src: broadcast, dest: unicast
+
+But ARP는 같은 LAN에 존재하는 노드의 정보밖에 알지 못함  
+-> 다른 LAN에 있는 노드와 통신하고 싶다면?  
+A-R-B 통신
+1. A - R: A's src MAC addr, R's dest MAC addr
+2. R - B: dest MAC addr 확인 후 routing table과 IP 주소로 길 찾음  
+  이때 R's src MAC addr, B's dest MAC addr로 바꿈
+
+### 홉바이홉 통신
+라우터의 라우팅 테이블 IP를 기반으로 목적지까지 패킷을 계속해서 전달하는 통신 방식
+
+### 라우팅 테이블
+해당 라우터에 들어가 있는 dest 정보와 그 방법이 들어있는 리스트
+게이트웨이 + 다음 라우터 정보
+
+#### 게이트웨이
+
+### IP 주소 체계
+#### IPv4
+32bit(8+8+8+8) -> 주소 고갈로 인해 IPv6 등장
+##### 클래스 기반 할당 방식
+<img src="https://thebook.io/img/080326/110_1.jpg">  
+맨 앞의 구분 비트로 클래스 구별 (0,10,110...)  
+ex) 클래스 A의 12.0.0.0 할당 -> 12.0.0.1 ~ 12.0.0.254만 호스트에 할당 가능
+
+#### DHCP
+적은 IP addr로 더 많은 사람들에게 서비스 -> 임시 IP 주소를 동적으로 할당, 실제 동시접속은 적기 때문
+
+#### NAT (Network Address Translation)
+공인 IP와 사설 IP로 나눠서 많은 주소 처리 가능  
+각 라우터에 공인 IP 할당 -> 해당 local network에 속하는 노드는 사설 IP를 가짐  
+라우터의 NAT 장치가 공인 IP <-> 사설 IP 변환  
+장점: 보안 good
+단점: 속도가 host에 반비례
+**NAT is controversial**
+NAT translation table에서는 IP addr와 port 번호를 함께 저장함
+-> src 정보를 테이블에 저장하는 과정에서 헤더를 하나 더 까서 port 번호를 확인해야 됨
+=> 하위 계층은 상위 계층의 정보를 볼 수 없다는 규칙에 위배
+
+#### IP주소를 이용한 위치 정보
+
+#### IPv6
 
