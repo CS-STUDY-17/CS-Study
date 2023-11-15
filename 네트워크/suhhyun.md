@@ -271,6 +271,9 @@ A-R-B 통신
 ### IP 주소 체계
 #### IPv4
 32bit(8+8+8+8) -> 주소 고갈로 인해 IPv6 등장
+
+#### IPv6
+
 ##### 클래스 기반 할당 방식
 <img src="https://thebook.io/img/080326/110_1.jpg">  
 맨 앞의 구분 비트로 클래스 구별 (0,10,110...)  
@@ -292,5 +295,46 @@ NAT translation table에서는 IP addr와 port 번호를 함께 저장함
 
 #### IP주소를 이용한 위치 정보
 
-#### IPv6
+## HTTP
+### HTTP/1.0 - TCP
+한 연결당 하나의 요청 처리 -> RTT 증가  
+- sol 1) 이미지 스플리팅: position 속성을 이용해 이미지 표기  
+- sol 2) 코드 압축: 개행문자와 공백 제거  
+- sol 3) 이미지 Base64 인코딩: 크기는 커지지만 http 요청 필요 X  
+
+### HTTP/1.1 - TCP
+parallel TCP conn: 한 연결로 여러 개의 요청 처리 가능 - keep-alive 옵션
+- HOL Blocking: TCP 특성 상 차례대로 데이터 처리 -> 맨 앞에 있는 데이터가 너무 크면 뒤에 있는 데이터까지 지연됨  
+- 무거운 헤더 구조
+
+### HTTP/2 - TCP
+멀티플렉싱: 여러 개의 스트림을 사용하여 쪼개진 데이터를 송수신(동시에 여러 개의 TCP conn 가능), 특정 패킷이 손실되어도 다른 스트림에 영향 X
+- TCP가 아닌 HTTP가 데이터 분할
+
+헤더 압축: 허프만 코딩 압축 알고리즘 사용 - 빈도가 높은 문자열에 짧은 비트 할당  
+서버 푸시: 클라이언트 요청 없이 리소스 푸시 가능  
+HTTPS: 통신을 암호화
+SSL/TLS: 전송 계층에서 보안을 제공하는 프로토콜  
+- 보안 세션
+  - 인증 메커니즘: CA 발급 인증서 기반(Comodo, Godaddy, ClobalSign, 아마존 등)
+  - 키 교환 암호화 알고리즘: 디피-헬만
+  - 해싱 알고리즘: SHA-256   
+  - 
+SEO 관리
+  - 캐노니컬 설정
+  - 메타 설정
+  - 페이지 속도 개선
+  - 사이트맵 관리  
+
+HTTPS 구축 방법
+  1. CA 인증키 기반 HTTPS 서비스 구축
+  2. 로드밸런서 이용
+  3. CDN 이용
+
+### HTTP/3 - UDP
+QUIC 계층 위에서 작동 (Quick UDP Internet Connection)  
+UDP 기반 -> 3-way handshaking 불필요 => 초기 연결 설정 지연시간 감소
+멀티플렉싱  
+FEC(Foword Error Connection): 패킷 손실 -> 수신 측에서 에러 감지하고 수정
+
 
