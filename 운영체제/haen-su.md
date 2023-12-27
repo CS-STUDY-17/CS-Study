@@ -391,3 +391,53 @@
 - 교착 상태 가능성이 없을 때만 자원이 할당되게 설계 → 은행원 알고리즘
 - 교착상태를 일으키는 프로세스 삭제
 - 프로세스 종료
+
+<br>
+<br>
+
+## SECTION 4 CPU 스케줄링 알고리즘
+
+<aside>
+💡 CPU 스케줄링 알고리즘의 목표
+
+- throughput 🔼
+- turnaround time 🔽
+- response time 🔽
+</aside>
+
+### 1. 비선점형 방식
+
+> **비선점형 방식(non-preemptive)**
+프로세스가 스스로 CPU 소유권을 포기하는 방식, 강제로 프로세스를 중지하지 않음
+> 
+
+(1) **FCFS(First Come First Served)**: 프로세스가 요청한 순서대로 CPU를 할당
+
+- 단점: ready queue에서 오래 기다림(convoy effect)
+
+(2) **SJF(Shortest Job First)**: 실행 시간이 가장 짧은 프로세스를 먼저 실행
+
+- 장점: 평균 대기 시간이 가장 짧음
+- 단점
+    - 실행 시간이 긴 프로세스가 실행되지 않음(startvation)
+    - 실제로 실행 시간을 알 수 없기 때문에 과거 실행 시간으로 추측
+
+(3) **우선순위**: SJF 알고리즘을 보완해 오래된 작업일수록 우선순위를 높임(aging)
+
+### 2. 선점형 방식
+
+> **선점형 방식(preemptive)**
+프로세스를 선정해 정해진 시간 내에 실행하고 시간이 초과되면 강제로 중지 → 현대 운영체제가 사용
+> 
+
+(1) **라운드 로빈(Round Robin)**: 프로세스에 동일한 할당 시간(time quantum)을 주고 시간이 다 되면 준비 큐의 뒤로 보냄
+
+- quantum이 너무 짧음 → process switch가 많이 발생해서 효율 떨어짐
+- quantum이 너무 김 → response time 커짐
+
+(2) **SRF(Shortest Remaining Time First)**: 프로세스의 남은 실행 시간이 가장 짧은 프로세스를 선택 
+
+(3) **다단계 큐(Multiple-Queues, CTSS)**:  우선순위에 따른 준비 큐를 여러 개 사용하고, 큐마다 라운드 로빈 등 다른 스케줄링 알고리즘을 적용
+
+- 장점: 스케줄링 부담이 적음
+- 단점: 유연성이 떨어짐
